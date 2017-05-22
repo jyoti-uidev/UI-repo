@@ -1,0 +1,57 @@
+.project-list-saved
+{
+  padding:0px;
+  background:#212325 !important;
+  border-top:none !important;
+  border-radius:0px;
+  float: right;
+  border: 1px solid #494D50 !important;
+  border-top: none !important;
+  padding: 10px 10px 0px 10px !important;
+.open-project
+{
+ margin-top:15px;
+ font-size:10px;
+ margin-top:0px;
+ padding-bottom:15px;
+ .project-list {
+     padding: 0px;
+     background: #212325;
+ }
+ .project-summary
+ {
+color: #83C0ff;
+font-family: “Roboto”;
+font-size: 12px;
+font-weight: 400;
+ }
+ .table-project {
+     font-family: roboto;
+     font-size: 18px;
+ }
+ table {
+     border: 0 !important;
+     margin-bottom: 5px;
+ }
+ tr {
+     border: 0 !important;
+ }
+ tr:hover {
+     background: linear-gradient(#6d7378, #494d50);
+ }
+ th {
+     border: 0 !important;
+     min-width: 90px;
+     color: #838383;
+     font-family: “Roboto”;
+     font-size: 12px;
+     font-weight: 400;
+ }
+ td {
+     border: 0 !important;
+ }
+ tbody {
+     border: 0 !important;
+ }
+}
+}
