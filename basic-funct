@@ -1,0 +1,8 @@
+/* To Hide the folder on the home page*/
+html:
+  <span *ngIf="isNavVisible()" dropdownToggle type="button"></span>
+  
+TS:
+    isNavVisible(){
+        return  this.router.url.indexOf('home') > -1  ? false : true;
+    }
