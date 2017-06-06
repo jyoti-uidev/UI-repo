@@ -6,3 +6,7 @@ TS:
     isNavVisible(){
         return  this.router.url.indexOf('home') > -1  ? false : true;
     }
+    
+ /* Href */
+  <a href="javascript:void(0)" class="pull-right"><i class="fa fa-question icon-style" style="padding-right:20px;color:gray;font-size:20px"></i></a>
+
