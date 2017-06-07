@@ -10,3 +10,23 @@ TS:
  /* Href */
   <a href="javascript:void(0)" class="pull-right"><i class="fa fa-question icon-style" style="padding-right:20px;color:gray;font-size:20px"></i></a>
 
+/*Icons visible on hover over*/
+html(table,span)
+<span class="pull-right" class="edit_hover_class"><i class="fa fa-sign-out icon-style"></i>
+
+styles.scss
+  tr{
+      td{
+        span i{
+        visibility:hidden;
+        }
+      }
+    }
+    tr:hover{
+      background: linear-gradient(#6d7378, #494d50);
+      td{
+        span i{
+        visibility: visible;
+        }
+      }
+    }
