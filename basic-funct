@@ -30,3 +30,21 @@ styles.scss
         }
       }
     }
+    
+    
+    /*Disable the button only on home page*/
+     <li role="menuitem">
+     <a class="dropdown-item" [attr.href]="isNavVisibleSummary() ? null : 'javascript:void(0)'" [class.disabled]="isNavVisibleSummary()">
+     Save As</a></li>
+     
+     .scss
+      .disabled {
+    pointer-events: none;
+    color: gray !important;
+    cursor: not-allowed;
+    }
+  .ts
+    isNavVisibleSummary() {
+        return this.router.url.indexOf('home') > -1 ? true : false;
+    }
+  
