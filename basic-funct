@@ -48,7 +48,7 @@ styles.scss
         return this.router.url.indexOf('home') > -1 ? true : false;
     }
   
-/*To Display Untitled on add new- ngIf*/
+/*To Display Untitled on load when the project is empty: on add new- ngIf*/
 <ng-template ngFor let-project [ngForOf]="appContext.OpenedProjects.Items">
                     <a  [routerLink]="['/project', project.Id]" class="project-name-details" style="font-size:18px"><span *ngIf='project.Name'>{{project.Name}}</span>
                     <span *ngIf='!project.Name'>Untitled</span></a>
