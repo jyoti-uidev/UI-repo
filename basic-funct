@@ -53,4 +53,18 @@ styles.scss
                     <a  [routerLink]="['/project', project.Id]" class="project-name-details" style="font-size:18px"><span *ngIf='project.Name'>{{project.Name}}</span>
                     <span *ngIf='!project.Name'>Untitled</span></a>
  </ng-template>
- 
+ /*Mocking the data*/
+ .ts
+  this.targetWellsSubScription = this.dataService.getTargetWells(dataSource).subscribe(
+      data => {
+        this.availableTargetWells = data;
+      /*adding more data*/
+      for (let i = 1; i < 10; i++) {
+          this.availableTargetWells.push(new Well(i.toString(), "Well-".concat(i.toString()), null))
+        }
+      },
+      /*---*/
+      error => {
+        console.error(error);
+      });
+  }
