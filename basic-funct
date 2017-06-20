@@ -68,3 +68,22 @@ styles.scss
         console.error(error);
       });
   }
+/*Add untitled in sequence and Time format acco to clients machine*/
+ private loadExistingProjects() {
+    this.projectsSubscription = this.projectDataService.getProjects().subscribe(projects => {
+      var i: number = 1;
+      projects.map ( x=> {
+        if (!x.Name) {
+          x.Name = 'Untitled ' + i;
+          i++;
+        }
+        x.DateCreated = new Date(Date.parse(x.DateCreated.toString() + '-05:00'));
+        x.LastModified = new Date(Date.parse(x.LastModified.toString() + '-05:00'));
+      })
+
+      this.existingProjects = projects.sort((a, b) => { return b.LastModified.getTime() - a.LastModified.getTime() })
+    }, getProjectError => {
+      console.error(getProjectError);
+    });
+  }
+
