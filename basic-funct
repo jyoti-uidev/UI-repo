@@ -87,3 +87,10 @@ styles.scss
     });
   }
 
+/*ListView Grid View Switch*/
+private shown: string = 'ListViewShow';
+  <i (click)="shown='ListViewShow'" class="fa fa-list-ul" aria-hidden="true">List View</i>
+                  <i (click)="shown = 'GridViewShow'" class="glyphicon glyphicon-th" aria-hidden="true">Grid View</i>
+      
+        <div class="col-md-12"  *ngIf="shown === 'GridViewShow'">dkjfhd</div>
+            <div class="col-md-12 grid-view-list">ksdfhid</div>
