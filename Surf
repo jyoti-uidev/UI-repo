@@ -1,0 +1,88 @@
+interpret.component.ts
+//Load Surfaces
+1.loadInitialDataNew():void{
+ this.loadSurfaces()
+}
+2.
+    private mockLineProperties(): LineProperties {
+        let surfaceProperties = new LineProperties();
+        // let colors =["#000000","#FF4233","#333333","#3933FF","#FF33A8"]
+        surfaceProperties.ColorHex = "#ff0000";
+        surfaceProperties.Style = LineStyle.Solid;
+        surfaceProperties.Visible = true;
+        surfaceProperties.Width = 2;
+        surfaceProperties.LeftValue = 0;
+        surfaceProperties.RightValue = 0;
+        return surfaceProperties;
+    }
+3. 
+    private loadSurfaces(): Observable<any> {
+        let surfaceProperties = this.mockLineProperties();
+        return Observable.create(observer => {
+            let source = Observable.forkJoin(this.dataLoadingService.getAllSurfaces());
+            observer.next(source);
+            this.surfacesSubscription = source.subscribe(surfaces => {
+                console.log(surfaces[0], 'surfacedaat');
+                surfaces[0].forEach(surface => {
+                    //  this.index =this.index + 1;
+                    surfaceProperties.Id = surface.Id;
+
+                    console.log("add surface", surface);
+
+                    this.addSurface(surface, surfaceProperties);
+                });
+                console.log("loaded all surfaces...");
+            },
+                error => {
+                    console.error('error loading surfaces');
+                    observer.complete();
+                },
+                () => {
+                    observer.complete();
+                });
+        });
+    }
+   4.
+      private addSurface(surfaceData: SurfaceData, properties: LineProperties, change?: ProjectChange) {
+        // console.log(surfaceData, "943");
+        if (surfaceData == null || surfaceData.Points.length == 0) return;
+        let sperryVizSurface = roxc_sperryviz_converter.convertRoxcSurfaceToSperryVizSurfaces2(surfaceData);
+
+        try {
+            let found = this.wellSection.GetVisualHolderById(sperryVizSurface.Id)
+            if (found) {
+                this.wellSection.RemoveVisualHolder(found);
+            }
+            let vsHolder = this.wellSection.AddSurface(sperryVizSurface, this.ConversionFactorToPlot, properties);
+        } catch (ex) {
+            console.error("Could not render surface");
+        }
+
+
+        //  this.updateSurfaceFills(change);
+    }
+
+    
+   data-loading.service.ts
+   //api calls
+   1.  getAllSurfaces(): Observable<any> {
+        return this.http.get(`${this.apiBaseURL}/AllSurfaces?projectId=${this.projectId}`, this.options)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    
+    roxc_sperryvix_converter.ts(Signal R)
+      public static convertRoxcSurfaceToSperryVizSurfaces2(roxCSurface: any): SperryVizSurface {
+
+        const Min = 0, Actual = 1, Max = 2;
+        let sperryVizSurface = new SperryVizSurface(roxCSurface.Id, roxCSurface.Name, RocxWebZOrder.Sufaces)
+
+        roxCSurface.Points.forEach(p => {
+            sperryVizSurface.Points.push(new SperryPoint(p.Md, p.Tvd));
+        });
+        return sperryVizSurface;
+    }
+    
+   
+    
+    
