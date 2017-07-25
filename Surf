@@ -83,6 +83,17 @@ interpret.component.ts
         return sperryVizSurface;
     }
     
+    Or(depending on the dto format)
+       public static convertRoxcSurfaceToSperryVizSurfaces2(roxCSurface: any): SperryVizSurface {
+
+        const Min = 0, Actual = 1, Max = 2;
+        let sperryVizSurface = new SperryVizSurface(roxCSurface.Id, roxCSurface.Name, RocxWebZOrder.Sufaces)
+
+        roxCSurface.Points.forEach(p => {
+            sperryVizSurface.Points.push(new SperryPoint(p.Md, p.Tvd));
+        });
+        return sperryVizSurface;
+    }
    
     
     
