@@ -1,0 +1,157 @@
+curve-data.service.ts
+
+   getHorizontalCurve(curveId: string): Observable<Curve> {
+        return this.http.get(`${this.apiBaseURL}/InterpretCurve?projectId=${this.projectId}&interpretCurveId=` + curveId)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+    addHorizontalCurve(trackId: string, dropString: string): Observable<Curve> {
+        let queryString = "&trackId=" + trackId + "&dropString=" + dropString;
+        return this.http.post(`${this.apiBaseURL}/InterpretCurve2?projectId=${this.projectId}` + queryString, this.options)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    
+ interpret-dtos.ts
+ 
+ export class IntCurvePoints {
+    public MD: number;
+    public TVD: number;
+    public Value: number;
+    constructor(md: number, tvd: number, value: number) {
+        this.MD = md;
+        this.TVD = tvd;
+        this.Value = value;
+
+    }
+}
+
+export class Curve {
+    public Id: string;
+    public Name: string;
+    public DisplayUnit: string;
+    public DisplayProperties: LineProperties;
+    public Data: IntCurvePoints[];
+    public SmoothingOptions: SmoothingOptions;
+}
+
+
+roxc_sperrywiz.convertor.ts
+import {
+    UncertaintyPoint, Curve, SurfaceData, BitPosition, Slice, LineProperties, CurveData, WellPath, Marker, FillProperties, PointWithValue,
+    RoxCPointMarkerProperties, PointMarkerProperties, SurfaceLineProperties, IntCurvePoints
+} from '../dtos/interpret-dtos';
+
+public static convertRoxcCurveToSperryViz(curve: Curve, depthType: DepthType): LogCurveData {
+        let sperryCurve = new LogCurveData();
+
+        sperryCurve.Name = curve.Name
+        sperryCurve.Id = curve.Id
+       // sperryCurve.Process = <any>curve.Data.CurveProcess;
+
+       sperryCurve.Process =<any> CurveProcess.Raw;
+        sperryCurve.CurveData = this.convertRoxcPointsToSperryCurve(curve.Data, DepthType.Md)
+        sperryCurve.Properties = this.convertRoxcLinePropertyToSperryViz(curve.DisplayProperties);
+
+        return sperryCurve;
+    }
+
+
+
+    private static convertRoxcPointsToSperryCurve(rocXPoints: Array<IntCurvePoints>, depthType: DepthType): Array<SperryPoint> {
+
+        let points = new Array<SperryPoint>();
+
+        if (rocXPoints != null && rocXPoints.length > 0) {
+            if (depthType === DepthType.Md) {
+                rocXPoints.forEach(x => {
+                    points.push(new SperryPoint(x.Value, x.MD));
+                });
+            } else if (depthType === DepthType.Tvd) {
+                rocXPoints.forEach(x => {
+                    points.push(new SperryPoint(x.Value, x.TVD));
+                });
+            }
+        }
+
+        return points;
+    }
+    
+    interpret.componenet.ts
+    
+     trackProp: TrackProperties;
+     
+    private subscribeToProjectChanges() {
+     this.pubSubService.subscribe(CallbackEvents.CurveAdded, payLoad => this.updateCurvePath(<EventPayload<CallbackEvents, any>>payLoad));
+    }
+     private updateCurvePath(payload) {
+        console.log('592', payload, this.trackProp);
+        this.trackProp['InterpretCurveIds'] = [];
+        this.trackProp['InterpCurveIds'] = [];
+        this.trackProp.InterpCurveIds.push(payload.args.InterpretCurveId);
+        this.loadHorizontalTrack(this.trackProp, true);
+    }
+
+    private loadHorizontalTrack(trackProp: TrackProperties, flag: boolean) {
+        console.log("load curve for get data", trackProp['InterpretCurveIds']);
+        let trackType = roxc_sperryviz_converter.convertPlotTypeToTrackType(trackProp.PlotType);
+        this.horizontalWellLogView.AddTrack(trackType, trackProp.Name, null, null, trackProp.Id);
+        if (trackProp.InterpCurveIds || trackProp['InterpretCurveIds']) {
+            console.log("inside if for curved ids");
+            let interCurveIds = trackProp.InterpCurveIds || trackProp['InterpretCurveIds'];
+            interCurveIds.forEach(curveId => {
+                let trackHolder = <TrackVisualHolder>this.horizontalWellLogView.VisualHolders.find(x => x.Id == trackProp.Id)
+                this.curvesDataService.getHorizontalCurve(curveId).subscribe(
+                    curve => {
+                        console.log(curve.Data === null, curve.Data, curve.Data);
+                        if (curve != null && curve.Data !== null) {
+                            // let points = curve.Data;
+                            // curve.Data = {CurveOrientation:{Type:''}};
+                            // curve.Data['Points'] = points;
+                            this.addHorizontalWellLog(trackHolder, curve, true, flag);
+                        }
+                        console.log("get horizontal track... data points: " + (curve.Data === null) ? 0 : curve.Data.length);
+                    },
+                    error => {
+                        console.error('Error loading horizontal tracks');
+                    });
+            });
+        }
+    }
+     private loadDropCurve(dropData: DroppedData) {
+        console.log(dropData,'dropData');
+        // TODO: Need to get the trackId;
+        let trackProp = this.horizontalTrackProperties.find(x => x.Id == dropData.DroppedTarget.TargetVisualHolder.Id);
+        this.trackProp = trackProp;
+        console.log(trackProp.Id, dropData.DataKey,'query');
+        this.curvesDataService.addHorizontalCurve(trackProp.Id, dropData.DataKey).subscribe(
+            validationCurve => {
+                // TODO: jdang 03/31/2017: Support a single curve per track now
+                // trackProp.InterpCurveIds.length = 0;
+
+                // if (validationCurve.HasValidationError) {
+                //     let errorMessages = validationCurve.ValidationErrors.join('\n');
+                //     this.dialogComponent.showMessage(errorMessages)
+                // }
+                // else {
+                //     trackProp.InterpCurveIds.push(validationCurve.DataObject.Id);
+                //     this.addHorizontalWellLog(dropData.DroppedTarget.TargetVisualHolder as TrackVisualHolder, validationCurve.DataObject, true, true);
+                //     console.debug("get drop curve... data points: ", validationCurve.DataObject.Data.Points.length);
+                // }
+            },
+            error => {
+              //  console.error('Error loading dropString');
+            });
+    }
+    
+    
+    private addHorizontalWellLog(selectedTrack: TrackVisualHolder, curve: Curve, overWrite: boolean, updateProperties) {
+        curve.Properties=curve['DisplayProperties'];
+        curve.Properties.Id=curve.Id;
+        }
+        
+    private updateWellPostion(payLoad: EventPayload<CallbackEvents, any>): void {
+        //console.log(payLoad.args,payLoad,'updatedwellposition');
+    }
+    
