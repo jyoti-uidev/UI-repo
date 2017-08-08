@@ -1,0 +1,42 @@
+ loadInitialDataNew(): void {
+        Observable.forkJoin(
+        ).subscribe(x => {
+           this.loadPseudologs();
+           
+        });
+    }
+    private loadVerticallogs() {
+        let verticalPseudolog = new CurveRequest(Alias.HorizontalResistivity, CurveType.Pseudolog, Orientation.Vertical, 0, true);
+        this._verticalLogSubscription = this.dataLoadingService.getVerticalPseudolog().subscribe(
+            data => {
+                console.log(data,"vertical log");
+                
+              //  curveData.Points = data.Data; 
+
+                this.addVerticalWellLog(data);
+                // JDang: 04/14/2017: take it out for now.
+                // this.addVerticalSurfaceMarkers();
+//console.log("get vertical Pseudologs... data points: " + data.Points.length);
+            },
+            error => {
+                console.error('Error loading  vertical Pseudologs');
+            });
+    }
+     private addVerticalWellLog(curveData) {
+        var  curveData1 = {
+                    CurveOrientation: Orientation.Vertical,
+                    Type: CurveType.Pseudolog,
+                    Alias:Alias.VerticalResistivity,
+                    CurveProcess:CurveProcess.Convolved,
+                    Points : curveData.Data 
+                };
+        let sperryCurve = roxc_sperryviz_converter.convertRoxcCurveDataToSperryViz(curveData1, DepthType.Tvd);
+        console.log("Vertical Curve: ", curveData);
+        if (sperryCurve != null && sperryCurve.CurveData.length > 0) {
+            sperryCurve.Properties = curveData.DisplayProperties ;//this.getPesuedologProperties(0.2, 2000);
+            // Hide Smoothing Options fo Vertical Logs
+            // Uncomment the line below to make Smoothing Options Visible for Vertical Logs
+            // sperryCurve['SmoothingOptions'] = this.getSmoothingOptions();
+            let vh = this.verticalPseudologTrack.AddCurve(sperryCurve, this.ConversionFactorToPlot);
+        }
+    }
