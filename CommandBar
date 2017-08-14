@@ -1,0 +1,21 @@
+analy.comp.html
+ <div class="main-controller" [ngClass]="{'overLay':sectionIcon=='pin'}" *ngIf="sectionIcon!='down'" id="controller-bar" [style.display]="controllerBarVisible" (clickOutside)="closeCommandBar($event)"
+    #mc>
+    
+    
+    <button [ngClass]="{'glyphicon-pushpin': sectionIcon=='pin', 'glyphicon-chevron-up': sectionIcon=='up', 'glyphicon-chevron-down': sectionIcon=='down' }" class="glyphicon"  (click)="handleSectionView()" ></button>
+   
+analy.comp.ts
+  sectionIcon: string = "up";
+    handleSectionView() {
+    if(this.sectionIcon == "down") {
+      this.sectionIcon = "pin";
+    }else if(this.sectionIcon == "up") {
+      this.sectionIcon = "down";
+    } else{
+      this.sectionIcon = "up";
+    }
+    console.log(":::", this.sectionIcon);
+  }
+  
+  
