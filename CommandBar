@@ -17,5 +17,28 @@ analy.comp.ts
     }
     console.log(":::", this.sectionIcon);
   }
+    setSperryVizPlot(width: number, height: number, fromTab:boolean): void {
+    if(!fromTab){
+    this.sectionIcon = this.sectionIcon == 'down' ? 'up' : 'down';
+    }
+  }
+  
+shared-data.service.ts
+
+
+import { Observable } from 'rxjs/Observable';
+
+@Injectable()
+export class SharedDataService {
+    constructor() {}
+    setNotFromAnalyze(notFrom:any):Observable<any>{
+        console.log(notFrom);
+        return notFrom;
+    }
+}
+
+        
+        
+        
   
   
