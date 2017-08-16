@@ -37,6 +37,35 @@ export class SharedDataService {
     }
 }
 
+
+project.component.ts
+
+ setConfigureSperryVizPlot(): void {
+        this.fromOtherTab = true;
+    }
+
+    setInterpretSperryVizPlot(): void {
+        let tabContent = this.elementRef.nativeElement.querySelector('div.tab-content');
+        let interpretNavHeight: number = 52;
+        this.fromOtherTab = true;
+
+        // Set initial plot size for sperryviz component on Interpret Tab
+        console.log("inter out", this.activeProject);
+        this.interpretComponent.setSperryVizPlot(tabContent.clientWidth, tabContent.clientHeight - interpretNavHeight);
+    }
+
+    setAnalyzeSperryVizPlot(): void {
+        let tabContent = this.elementRef.nativeElement.querySelector('div.tab-content');
+        let analyzeNavHeight: number = 52;
+        // Set initial plot size for sperryviz component on Analyze Tab
+        // this.sharedDataService.setNotFromAnalyze('fromAnalyze').subscribe(data =>{
+        // console.log("analyze in")
+
+        // })
+        this.analyzeComponent.setSperryVizPlot(tabContent.clientWidth, tabContent.clientHeight - analyzeNavHeight, this.fromOtherTab);
+        this.fromOtherTab = false;
+    }
+
         
         
         
