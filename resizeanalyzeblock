@@ -1,0 +1,33 @@
+analyze.component.ts
+    @ViewChildren('offWellsPanel') offWellsPanel;
+    
+        if (this.project.OffsetWells && this.project.OffsetWells.length > 0) {
+            if (this.offsetWells) {
+                let size;
+              //  setTimeout(()=>{
+                    if(this.project.OffsetWells.length >= 4) {
+                            this.offWellsPanel._results[0].nativeElement.style.overflown = 'scroll';
+                            size = window.innerWidth/3;
+                    }else {
+                            this.offWellsPanel._results[0].nativeElement.style.overflown = 'hidden';
+                            size = window.innerWidth/this.project.OffsetWells.length;
+                    }
+                    this.offsetWells.forEach(x => {
+                    x.setLayout(size-25, 700);
+                    // this..setLayout(width / this.project.OffsetWells.length, height);
+                })
+               // }, 100)
+            }
+        }
+    }
+    
+    analyze.component.scss
+    /*.row .selection-row {
+    width: 5%;
+    text-align: center;
+    padding-bottom: 14px;
+    height: 70.6px;
+}*/
+
+analyze.component.html
+  <div #offWellsPanel class="row analyze-offsetwell col-sm-12" *ngIf="project">
