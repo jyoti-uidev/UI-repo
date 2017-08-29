@@ -1,0 +1,33 @@
+ command-bar.ts
+import { Component, OnInit, ViewChild, ViewChildren, Renderer, ElementRef} from '@angular/core';
+
+@Component({
+  selector: 'command-bar',
+  templateUrl: './command-bar.component.html',
+  styleUrls: ['./command-bar.component.scss']
+})
+export class CommandBarComponent implements OnInit {
+  @ViewChildren('addSurfaceRef') AddSurfaceRef;
+  private toggleAddsurfaceDropdown: boolean = false;
+  constructor(renderer: Renderer) {
+    renderer.listenGlobal('document', 'click', (event) => {
+    if (!this.AddSurfaceRef['_results'][0].nativeElement.contains(event.target)){
+      this.toggleAddsurfaceDropdown = false;
+    }
+  });
+  }
+  ngOnInit() {
+  }
+
+ addsurfaceDropdownToggle(){
+    this.toggleAddsurfaceDropdown = !this.toggleAddsurfaceDropdown;
+  }
+  
+ command-bar.html
+   <img #addSurfaceRef src="/assets/icons/add_bed_boundary_24.png" (click)="addsurfaceDropdownToggle()" tooltip="Add Surface" placement="bottom">
+                     <div class="addsurface-dropdown" *ngIf="toggleAddsurfaceDropdown">
+                        <span>Add Flat Surface</span>
+                        <span>Add Parallel Surface</span>
+                        <span>Add Proportional Surface</span>
+                        </div>
+                </div>
