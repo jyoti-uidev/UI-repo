@@ -1,0 +1,73 @@
+command-bar.html
+ <img src="/assets/icons/remove_surface_24.png" (click)="cancelsurfaceDropdown($event)">
+             
+command-bar.component.ts
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ViewChildren, Renderer, ElementRef} from '@angular/core';
+
+  @Output() catchIconEvent= new EventEmitter();
+      this.catchIconEvent.emit(false);
+    if(this.offWellsPanelNative){
+    renderer.listen(this.offWellsPanelNative._results[0].nativeElement, 'click', (e) =>{
+      e.stopPropagation();
+      this.toggleAddsurfaceDropdown = false;
+      this.cancelIcon = "/assets/icons/cancel_disabled.png";
+      this.catchIconEvent.emit(false);
+    })
+    }
+     selectsurfaceDropdown(e) {
+    e.stopPropagation();
+    this.cancelIcon = '/assets/icons/remove_surface.png';
+    this.toggleAddsurfaceDropdown = false;
+    this.catchIconEvent.emit(true);
+  }
+  
+  analyze.component.html
+  <button *ngIf="sectionIcon=='pin'"   [ngClass]="{'fa-thumb-tack': sectionIcon=='pin', 'fa-chevron-up': sectionIcon=='up',
+        'fa-chevron-down': sectionIcon=='down' }"
+        class="fa analyze-chevron" (click)="handleSectionView()" tooltip="Pin Commandbar" placement="bottom"></button>
+        </span>
+    <command-bar (catchIconEvent)="catchIconEvent($event)"></command-bar>
+    
+   <well-logs #offsetWells [offsetWell]="well" [surfaces]="project.Surfaces" [addSurface]="addSurface"
+        (onWelllogsView)="injectWellLogsView($event)"></well-logs>
+        <div class="tooltip-move"id="my-tooltip" style="color:black">Select TVD on Track</div>
+
+
+analyze.component.ts
+    showTvdTooltip(e): void {
+        let tooltip: any = document.getElementsByClassName('tooltip-move')[0];
+       document.getElementById('tooltip-container').style.display = 'none';
+       tooltip.style.display = 'none';
+    if(this.addSurface){
+        if (e.target.tagName != 'CANVAS') {
+            tooltip.style.display = 'block';
+            tooltip.style.position = 'fixed';
+            tooltip.style.top = e.pageY + 'px';
+            tooltip.style.left = e.pageX + 'px';
+        } else {
+            tooltip.style.top = '9000px';
+            tooltip.style.left = e.pageX + '9000px';
+            document.getElementById('tooltip-container').style.display = 'block';
+        }
+    }
+    }
+       showTvdTooltip(e): void {
+        let tooltip: any = document.getElementsByClassName('tooltip-move')[0];
+       document.getElementById('tooltip-container').style.display = 'none';
+       tooltip.style.display = 'none';
+    if(this.addSurface){
+        if (e.target.tagName != 'CANVAS') {
+            tooltip.style.display = 'block';
+            tooltip.style.position = 'fixed';
+            tooltip.style.top = e.pageY + 'px';
+            tooltip.style.left = e.pageX + 'px';
+        } else {
+            tooltip.style.top = '9000px';
+            tooltip.style.left = e.pageX + '9000px';
+            document.getElementById('tooltip-container').style.display = 'block';
+        }
+    }
+    }
+    
+    
+  
