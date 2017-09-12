@@ -1,0 +1,57 @@
+analyze.component.html
+<button *ngIf="sectionIcon=='pin'"   [ngClass]="{'fa-thumb-tack': sectionIcon=='pin', 'fa-chevron-up': sectionIcon=='up',
+        'fa-chevron-down': sectionIcon=='down' }"
+        class="fa analyze-chevron" (click)="handleSectionView()" tooltip="Pin Commandbar" placement="bottom"></button>
+       
+    <div #offWellsPanel class="row analyze-offsetwell col-sm-12" *ngIf="project" (mouseleave)="showTvdTooltip($event)" (mousemove)="showTvdTooltip($event)">
+  
+  
+  analyze.component.ts
+   catchIconEvent(add: boolean) {
+        this.addSurface = add? add : false;
+        let tooltip: any = document.getElementsByClassName('tooltip-move')[0];
+        if(tooltip){
+        tooltip.style.display='none';
+        }
+    }
+   cumulativeOffset(element): any {
+    var top = 0, left = 0;
+    do {
+        top += element.offsetTop  || 0;
+        left += element.offsetLeft || 0;
+        element = element.offsetParent;
+    } while(element);
+    let position = {
+        top: top,
+        left: left
+    };
+    return position;
+    };
+    
+        showTvdTooltip(e): void {
+        let tooltip: any = document.getElementsByClassName('tooltip-move')[0];
+       document.getElementById('tooltip-container').style.display = 'none';
+       tooltip.style.display = 'none';
+       let sperryPosition = this.cumulativeOffset(this.offsetWells['_results'][0].sperryViz.elementRef.nativeElement);
+    if(this.addSurface){
+        if (e.target.tagName != 'CANVAS') {
+            tooltip.style.display = 'block';
+            tooltip.style.position = 'fixed';
+            tooltip.style.top = e.pageY + 'px';
+            tooltip.style.left = e.pageX + 'px';
+        } else {
+
+
+            tooltip.style.top = '9000px';
+            tooltip.style.left = e.pageX + '9000px';
+            document.getElementById('tooltip-container').style.display = 'block';
+        }
+        if(e.pageY>sperryPosition.top+30){
+            tooltip.style.display = 'none';
+        }
+    }
+    }
+    
+    
+    
+    
