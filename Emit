@@ -5,11 +5,13 @@ ngOnInit() {
          this.test1.emit('Mamadou');
          }
 
-Analyze.componenent.ts
-   displayName(name: string) {
-        this.name = name;
-    }
+
 Analyze.component.html
  <command-bar (catchIconEvent)="catchIconEvent($event)" (test1)='displayName($event)' ></command-bar>
  <span>{{name}}</span>
  
+Analyze.componenent.ts
+name: string = '';
+   displayName(name: string) {
+        this.name = name;
+    }
