@@ -1,0 +1,15 @@
+//Name displayed in Analyze and defined in Command-bar
+Command-bar.componenent.ts
+@Output() test = new EventEmitter<string>();
+ngOnInit() {
+         this.test.emit('Mamadou');
+         }
+
+Analyze.componenent.ts
+   displayName(name: string) {
+        this.name = name;
+    }
+Analyze.component.html
+ <command-bar (catchIconEvent)="catchIconEvent($event)" (test)='displayName($event)' ></command-bar>
+ <span>{{name}}</span>
+ 
