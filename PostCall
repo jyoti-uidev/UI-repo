@@ -1,0 +1,30 @@
+analyze-data.service.ts
+  addFlatSurface():Observable<any>{
+         //let queryString = '?surfaceId=' + project.Id + '&surfaceName=' + encodeURIComponent(surface.Name);
+       return this.http.post(`${this.apiBaseURL}/api/v2/analyze/AddFlatSurface?projectId=fdcc3f2c-b0fd-42f6-a076-e70c36068912&offsetWellId=ba508610-3f2c-43c5-8c82-4f83d6c2ce55&tvd=3952`, this.options)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+    
+ command-bar.component.html
+   <span (click)=addFlatSurface()>Add Flat Surface</span>
+    
+ command-bar.component.ts
+ import { AnalyzeDataService } from 'app/modules/analyze/analyze-data.service';
+ constructor(private analyzeDataService: AnalyzeDataService) {
+    this.appContext = appContext;
+    this.surfaceDataService.sharedSurfacelength$.subscribe(
+       data =>{
+         this.surfaceLength = data;
+       }
+     )
+public addFlatSurface(){
+  console.log('flatsurface')
+  this.analyzeDataService.addFlatSurface().subscribe(
+    result=>{
+
+    },(error) => {
+        console.error("failed to loadSurfaceDetails.....", error)
+      })
+}
+   
