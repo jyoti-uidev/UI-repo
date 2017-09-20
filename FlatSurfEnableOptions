@@ -1,0 +1,55 @@
+comman-bar.component.html
+<span [ngClass]= "{'disableoption' : surfaceLength<2}">Add Parallel Surface {{surfaceLength}}</span>
+                            <span [ngClass]= "{'disableoption' : surfaceLength<3}">Add Proportional Surface</span>
+
+comman-bar.component.scss
+.disableoption{
+    color: grey;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+  
+  comman-bar.component.ts
+  import { SurfaceDataService } from "../../../services";
+private surfaceLength: any;
+private surfaceDataService: SurfaceDataService) {
+    this.appContext = appContext;
+    this.surfaceDataService.sharedSurfacelength$.subscribe(
+       data =>{
+         this.surfaceLength = data;
+       }
+     )
+
+surfaces.comp.html
+  <div  #surfaceCHeckBox class="available-surfaces">
+  
+  surfaces.comp.ts
+  import { Component, OnInit, Input, ViewChild, ViewChildren, OnChanges, ElementRef } from '@angular/core';
+  import { PubSubService, EventPayload, ChannelService, SurfaceDataService } from "../../../services";
+  
+  @ViewChildren('surfaceCHeckBox') public surfaceCHeckBox: any;
+  
+    constructor(
+    public surfaceDataService: SurfaceDataService)
+  }
+  onSurfaceSelected(selected: boolean, sourceSurface: SourceSurfaceApi): void {
+    console.log(this.surfaceCHeckBox._results[0].nativeElement.querySelectorAll('input'), "proj Config", this.projectConfig.Surfaces.length);
+    let surfaceLength = 0;
+    let surfaceInputs = this.surfaceCHeckBox._results[0].nativeElement.querySelectorAll('input');
+    surfaceInputs.forEach((list) =>{
+      if(list.checked) surfaceLength++;
+    })
+    this.surfaceDataService.shareSurfaceLength(surfaceLength);
+    
+    surface-data.service.ts
+    import { Subject }    from 'rxjs/Subject';
+     public sharedSurfacelength = new Subject<any>();
+    sharedSurfacelength$ = this.sharedSurfacelength.asObservable();
+     shareSurfaceLength(surfaceLength: any): void {
+        this.sharedSurfacelength.next(surfaceLength);
+    }
+    
+
+
+
+
