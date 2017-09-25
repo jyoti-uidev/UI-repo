@@ -50,6 +50,26 @@ surfaces.comp.html
     }
     
 
+surfaces.comp.ts
 
-
+   setTimeout(() => {
+    console.log('inconstructor', this.surfaceCHeckBox._results[0].nativeElement.querySelectorAll('input'));
+    this.surfaceCheckListCal()
+    }, 5000)
+  }
+  
+    surfaceCheckListCal() {
+    let surfaceLength = 0;
+    let surfaceInputs = this.surfaceCHeckBox._results[0].nativeElement.querySelectorAll('input');
+    surfaceInputs.forEach((list) =>{
+      if(list.checked) surfaceLength++;
+    })
+    this.surfaceDataService.shareSurfaceLength(surfaceLength);
+  }
+  
+  onSurfaceSelected(selected: boolean, sourceSurface: SourceSurfaceApi): void {
+    console.log(this.surfaceCHeckBox._results[0].nativeElement.querySelectorAll('input'), "proj Config", this.projectConfig.Surfaces.length);
+    this.surfaceCheckListCal();
+    }
+  
 
