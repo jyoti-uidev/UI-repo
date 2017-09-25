@@ -1,0 +1,32 @@
+well-logs.component.ts
+import { Component, OnInit, ViewChild, AfterViewInit, Input, OnChanges, OnDestroy } from '@angular/core';
+import { OffsetWell, CurveTrackProperties, BaseDisplayProperties, CurveInfo, ProcessedCurve, SurfaceInfo, Dictionary, NodeType, AppContext, ValidationResult } from "app/classes/dtos";
+import { ToastrService } from 'ngx-toastr';
+
+       this.analyzeDataService.addFlatSurface(this.projectId, this.offsetWell.Id, tvd).subscribe(
+            result => {
+                console.log('added flat surface....', result);
+
+                let validationResult = <ValidationResult>result.ValidationResult;
+
+                if (validationResult && validationResult.IsValid) {
+                    let surfaceInfo = <SurfaceInfo>result.Surface;
+                    if (surfaceInfo) {
+                        this.plotSurface(surfaceInfo);
+                    }
+                } else {
+                    this.toastrService.success(result.ValidationResult.Messages[0]);
+                }
+            }, (error) => {
+                console.error("failed to loadSurfaceDetails.....", error)
+            })
+    }
+    
+    
+    
+    surfaces.comp.ts
+    
+    
+    
+
+
