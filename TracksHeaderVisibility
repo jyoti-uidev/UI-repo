@@ -1,0 +1,29 @@
+ private onVisibilityChanged(payload: EventPayload<UIEvents, KeyValuePair<NodeType, KeyValuePair<string, boolean>>>): void {
+
+        if (payload.args.Key === NodeType.AllSurfaces || payload.args.Key === NodeType.Surface) {
+            this.setSurfacesVisibility(payload.args.Key, payload.args.Value)
+        }
+        else if ([NodeType.CurveName, NodeType.Curve].find(x => x === payload.args.Key)) {
+            this.setCurveTrackVisibility(payload.args.Key, payload.args.Value)
+        }
+        let falseCount = 0
+        if(payload.args.Key) {
+        this.curvesVH.forEach((c) => {
+                this.tracksVH.forEach((t) => {
+            if(t.Name == c.ParentTrack.Name) {
+                if(!c.Properties.Visible) {
+                      //  t.Visual.setVisible(false);
+                            t.Visual.setWidth(0);
+                            this.wellLogsView.Widget.getHeaderContainer().rebuild();
+                        }else {
+                     //   t.Visual.setVisible(true);
+                            t.Visual.setWidth(170);
+                            this.wellLogsView.Widget.getHeaderContainer().rebuild();
+                        }
+                    }
+                    })
+            })
+        }
+        // this.onDisplayPropertiesChanged(payload);
+    }
++
