@@ -1,0 +1,15 @@
+curve-properties.component.ts
+      this.analyzeDataService.validateCurveProcessProperties(this.curveInfo, this.curveProcessProperties).subscribe(
+        result => {
+          console.log("-> validation",result);
+        }, (error) => {
+          console.error("failed to loadSurfaceDetails.....", error)
+        })
+analyze-data.service.ts
+ public validateCurveProcessProperties(curves: CurveInfo,curveProcessProperties: CurveProcessProperties): Observable<any> {
+    let queryString = '&alias=0';
+        return this.http.post(`${this.apiBaseURL}/api/v2/analyze/validateCurveProcessProperties?${queryString}`, JSON.stringify(curves.CurveProcessProperties), this.options)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+  
