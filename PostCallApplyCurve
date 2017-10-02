@@ -1,0 +1,25 @@
+curve-properties.componenet.ts
+import { CurveInfo, CurveProcessProperties, BaseDisplayProperties, ProcessedCurve, AppContext, OffsetWell } from "app/classes/dtos";
+@Input() curveProcessProperties: CurveProcessProperties;
+ public processOnClick(): void {
+    console.log("Process -onclick()");
+    this.analyzeDataService.applyCurveProcessProperties(this.curveInfo, this.curveProcessProperties).subscribe(
+      result => {
+        console.log("->",result);
+      }, (error) => {
+        console.error("failed to loadSurfaceDetails.....", error)
+      })
+
+  }
+
+analyze-data.service.ts
+import { CurveInfo, BaseDisplayProperties, CurveTrackProperties, CurveProcessProperties } from '../../classes/dtos';
+ public applyCurveProcessProperties(curves: CurveInfo, curveProcessProperties: CurveProcessProperties): Observable<any> {
+        let queryString = 'curveId=' + curves.Id + '&alias=0';
+        return this.http.post(`${this.apiBaseURL}/api/v2/analyze/ApplyCurveProcessProperties?${queryString}`, JSON.stringify(curves.CurveProcessProperties), this.options)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+
+
