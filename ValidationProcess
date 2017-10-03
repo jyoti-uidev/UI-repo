@@ -1,29 +1,77 @@
 curve-properties.component.html
- <input type="number" class="form-control" [ngModel]="curveInfo.CurveProcessProperties.WindowLength" name="windowLength"
-                #windowLength="ngModel" [gte]="0.10">
+ <input type="number" class="form-control" [(ngModel)]="curveInfo.CurveProcessProperties.BedTolerance" name="BEDTOLERANCE"
+              #BEDTOLERANCE="ngModel" [lte]="10000.00" (change)="updateLogsValidation()" required>
+              <tr>
+          <td colspan="2" align="right">
+            <error-message *ngIf="curveBedToleranceValidationError && curveBedToleranceValidationError.length > 0" [message]="curveBedToleranceValidationError"></error-message>
+          </td>
+        </tr>
+        
+         <input type="number" class="form-control" [(ngModel)]="curveInfo.CurveProcessProperties.StepSize" name="STEPSIZE" #STEPSIZE="ngModel"
+               (change)="updateLogsValidation()" required>
+              <tr>
+            <td colspan="2" align="right">
+              <error-message *ngIf="curveStepSizeValidationError && curveStepSizeValidationError.length > 0" [message]="curveStepSizeValidationError"></error-message>
+            </td>
+          </tr>  
+          <input type="number" class="form-control" [(ngModel)]="curveInfo.CurveProcessProperties.ValueTolerance" name="VALUETOLERANCE" #VALUETOLERANCE="ngModel"
+            (change)="updateLogsValidation()"></td>
+             <tr>
+          <th><span>Window Length (ft):</span></th>
+          <td>
+              <input type="number" class="form-control" [(ngModel)]="curveInfo.CurveProcessProperties.WindowLength" name="WINDOW LENGTH"  #WINDOWLENGTH="ngModel"
+         <tr>
+          <td colspan="2" align="right">
+            <error-message *ngIf="curveWindowLengthValidationError  && curveWindowLengthValidationError.length > 0" [message]="curveWindowLengthValidationError"></error-message>
+          </td>
+        </tr>
+          
                 
 curve-properties.component.ts
 
 import { ValidationResult } from "app/classes/dtos";
  public disableApply: boolean = true;
- 
-   public resetErrors() {
+ public curveBedToleranceValidationError: string;
+  public curveStepSizeValidationError: string;
+  public curveValueToleranceValidationError: string;
+  public curveWindowLengthValidationError: string;
+  
+  ngOnInit() {
     this.curveBedToleranceValidationError = '';
+    this.curveStepSizeValidationError = '';
+    this.curveWindowLengthValidationError = '';
   }
   
-   public updateLogsValidation(args: any) {
+  
+ 
+  public resetErrors() {
+    this.curveBedToleranceValidationError = '';
+    this.curveStepSizeValidationError = '';
+    this.curveValueToleranceValidationError = '';
+    this.curveWindowLengthValidationError = '';
+  }
+  
+  public updateLogsValidation(args: any) {
     this.resetErrors();
     console.log("Process -onclickProcess()");
     this.analyzeDataService.validateCurveProcessProperties(this.curveInfo, this.curveProcessProperties).subscribe(validate => {
-      console.log("======>Log Validate", validate)
       if (!validate.IsValid) {
-        let result = this.getValidationProperty(['BedTolerance'], validate);//Error
-        console.log("result of invalid data", result);
-        for(let i=0; i<result.length;i++){
-          if(result[i].Name == 'BedTolerance'){
-            console.log("result of invalid data Neme", result[i].Name)
+        let result = this.getValidationProperty(['BED TOLERANCE', 'STEP SIZE', 'VALUE TOLERANCE', 'WINDOW LENGTH'], validate);
+        for(let i=0; i<result.length; i++){
+          if(result[i].Name == 'BED TOLERANCE'){
             this.curveBedToleranceValidationError = result[i].Message;
           }
+          else if(result[i].Name == 'STEP SIZE'){
+             this.curveStepSizeValidationError = result[i].Message;
+           }
+           else if(result[i].Name == 'VALUE TOLERANCE'){
+             this.curveValueToleranceValidationError = result[i].Message;
+           }
+           else if(result[i].Name == 'WINDOW LENGTH'){
+            console.log("S Name", result[i].Name)
+             this.curveWindowLengthValidationError = result[i].Message;
+             console.log('S Message', result[i].Message);
+           }
           else{
             this.disableApply = false;
           }
@@ -32,10 +80,12 @@ import { ValidationResult } from "app/classes/dtos";
       }, (error) => {
         console.log("failed to set Process", error)
     });
-    
-    
-      private getValidationProperty(properties: string[], validation: ValidationResult): ValidationProperty[] {
+  }
+
+
+  private getValidationProperty(properties: string[], validation: ValidationResult): ValidationProperty[] {
     let validationProps: ValidationProperty[] = [];
+    console.log("validation properties res", ValidationResult);
     console.log("validation properties", validationProps);
     validation.Messages.forEach(x => {
       properties.forEach(p => {
@@ -46,6 +96,7 @@ import { ValidationResult } from "app/classes/dtos";
     })
     return validationProps;
   }
+  //
     
  export class ValidationProperty {
   public Name: string;
@@ -57,7 +108,13 @@ import { ValidationResult } from "app/classes/dtos";
   }
 }
  
-  
+analyze-data.service.ts
+ public validateCurveProcessProperties(curves: CurveInfo,curveProcessProperties: CurveProcessProperties): Observable<any> {
+    let queryString = '&alias=Gamma';
+        return this.http.post(`${this.apiBaseURL}/api/v2/analyze/validateCurveProcessProperties?${queryString}`, JSON.stringify(curves.CurveProcessProperties), this.options)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
   
  
  
