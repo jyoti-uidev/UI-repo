@@ -1,0 +1,63 @@
+curve-properties.component.html
+ <input type="number" class="form-control" [ngModel]="curveInfo.CurveProcessProperties.WindowLength" name="windowLength"
+                #windowLength="ngModel" [gte]="0.10">
+                
+curve-properties.component.ts
+
+import { ValidationResult } from "app/classes/dtos";
+ public disableApply: boolean = true;
+ 
+   public resetErrors() {
+    this.curveBedToleranceValidationError = '';
+  }
+  
+   public updateLogsValidation(args: any) {
+    this.resetErrors();
+    console.log("Process -onclickProcess()");
+    this.analyzeDataService.validateCurveProcessProperties(this.curveInfo, this.curveProcessProperties).subscribe(validate => {
+      console.log("======>Log Validate", validate)
+      if (!validate.IsValid) {
+        let result = this.getValidationProperty(['BedTolerance'], validate);//Error
+        console.log("result of invalid data", result);
+        for(let i=0; i<result.length;i++){
+          if(result[i].Name == 'BedTolerance'){
+            console.log("result of invalid data Neme", result[i].Name)
+            this.curveBedToleranceValidationError = result[i].Message;
+          }
+          else{
+            this.disableApply = false;
+          }
+        }
+      }
+      }, (error) => {
+        console.log("failed to set Process", error)
+    });
+    
+    
+      private getValidationProperty(properties: string[], validation: ValidationResult): ValidationProperty[] {
+    let validationProps: ValidationProperty[] = [];
+    console.log("validation properties", validationProps);
+    validation.Messages.forEach(x => {
+      properties.forEach(p => {
+        if (x.indexOf(p) > -1) {
+          validationProps.push(new ValidationProperty(p, x));
+        }
+      })
+    })
+    return validationProps;
+  }
+    
+ export class ValidationProperty {
+  public Name: string;
+  public Message: string
+
+  constructor(name: string, message: string) {
+    this.Name = name;
+    this.Message = message
+  }
+}
+ 
+  
+  
+ 
+ 
