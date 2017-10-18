@@ -1,0 +1,29 @@
+command-bar.html
+ <img  [src]="cancelBedBoundary" tooltip="Add&nbsp;Bed&nbsp;Boundary" placement="bottom" [class.active]="AddBedBoundaryActive"
+                        (click)="toggleAddBedBoundaries($event,'AddBedBoundary')">
+               
+               
+command-bar.ts
+
+  private EnableBedBoundary: boolean = false;
+   ngOnChanges(onChanges) {
+    this.EnableBedBoundary = false
+  }
+  public SetCurveEditingButtonsState(e:any, enabled: boolean) {
+    // Jdang :  enable/ disable all buttons ....
+    e.stopPropagation();
+    if (enabled) {
+      setTimeout(() => {
+        this.cancelBedBoundary = "/assets/icons/AddBedBoundary.png";
+        console.log(":::::", enabled, this.cancelBedBoundary)
+      }, 500)
+
+      //this.toggleAddsurfaceDropdown = false;
+    }
+    console.log(' Curve Editing: ', enabled);
+  }
+  analyze.comp.ts
+
+   this.commandBarComponent.SetCurveEditingButtonsState(event, processType === CurveProcess.Squared);
+          
+  
