@@ -2,7 +2,7 @@
 Command-bar.componenent.ts
 @Output() test1 = new EventEmitter<string>();
 ngOnInit() {
-         this.test1.emit('Mamadou');
+         this.test1.emit('Msfddfdfssu');
          }
 
 
