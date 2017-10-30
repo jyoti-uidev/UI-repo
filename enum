@@ -1,0 +1,24 @@
+enums.ts
+export enum EditingMode {
+    MovePartialSurface=<any>'MovePartialSurface',
+    MoveWholeSurface=<any>'MoveWholeSurface',
+}
+
+command-bar.html
+<img src="/assets/icons/MoveSurfaceSingle.png"  tooltip="Move Surface at Single Offset" (click)="MovePartialSurface($event, 'MovePartialSurface')"
+                        placement="bottom">
+
+command-bar.ts
+  @Output() editingModeChanged = new EventEmitter<EditingMode>(null);
+    private editingMode: EditingMode = null;
+  MoveWholeSurface(e: any, editingMode: EditingMode, enabled: boolean){
+        this.editingMode = editingMode;
+        this.editingModeChanged.emit(<EditingMode>editingMode);
+        console.log("editing mode", <EditingMode>editingMode)
+    }
+
+    MovePartialSurface(e: any, editingMode: EditingMode, enabled: boolean){
+        this.editingMode = editingMode;
+        this.editingModeChanged.emit(<EditingMode>editingMode);
+        console.log("editing mode", <EditingMode>editingMode)
+    }
