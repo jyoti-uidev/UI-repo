@@ -1,0 +1,42 @@
+command-bar.componenet.html
+<div class="col-sm-4 inner-cells inner-surfaceedit" [ngClass]="{'select-addsurface-active': selectionIcon}">
+                    <img *ngIf="unselectSurface && numberOfSurfaces > 0" src="/assets/icons/MoveSurfaceAll.png"
+                        tooltip="Move&nbsp;Surface&nbsp;at&nbsp;All&nbsp;Offsets" (click)="MoveWholeSurface($event, 'MoveWholeSurface')" placement="bottom">
+                    <img *ngIf="!unselectSurface || numberOfSurfaces == 0" src="/assets/icons/MoveSurfaceAll_disabled.png"
+                        placement="bottom">
+                </div>
+
+command-bar.comp.scss
+.select-addsurface-active{
+  img{
+   padding: 5px;
+   background:#6D7378 !important;
+  }
+}
+
+command-bar.comp.ts
+@Input() selectionIcon:boolean;
+
+analyze.comp.html
+ <command-bar #commandBar [numberOfSurfaces]="surfacesCount" (zoomInChanged)="onZoomInChanged($event)" (zoomOutChanged)="onZoomOutChanged($event)"
+            (zoomToFitChanged)="onZoomToFitChanged($event)" (editingModeChanged)="editingModeChanged($event)" (rubberBandZoomChanged)="rubberBandZoomChanged($event)"
+            (deleteSurface)="deleteSurface($event)" (switchPropertyPanel)="switchPropertyPanel($event)"
+            [unselectSurface]="selectAllCheck" [selectionIcon]="selectionIcon"></command-bar>
+
+
+analyze.comp.html
+ <command-bar #commandBar [numberOfSurfaces]="surfacesCount" (zoomInChanged)="onZoomInChanged($event)" (zoomOutChanged)="onZoomOutChanged($event)"
+            (zoomToFitChanged)="onZoomToFitChanged($event)" (editingModeChanged)="editingModeChanged($event)" (rubberBandZoomChanged)="rubberBandZoomChanged($event)"
+            (deleteSurface)="deleteSurface($event)" (switchPropertyPanel)="switchPropertyPanel($event)"
+            [unselectSurface]="selectAllCheck" [selectionIcon]="selectionIcon"></command-bar>
+            
+            
+ analyze.comp.ts
+  public selectionIcon :boolean = false;
+  
+  public onNodeSelected(){
+  this.selectionIcon = true;
+               this.editingMode = EditingMode.MoveWholeSurface;
+                console.log("editModewhole:", this.editingMode)
+                console.log("select surface from the tree... ")
+   }        
